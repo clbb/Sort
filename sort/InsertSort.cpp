@@ -24,16 +24,18 @@ void InsertSort(int a[],int n)
 	int j = 0;
 	for(int i = 1; i<n; ++i)
 	{
-		monitor = i;
-		j = i-1;
-		while(j < n && a[j] < a[j-1])
+		if(a[j] < a[j+1])
 		{
-			monitor = j;
-			a[j-1] = a[j];
-			j++;
+			monitor = i;
+			j = i-1;
+			while(monitor < a[j])
+			{
+				a[j+1] = a[j];
+				j++;
+			}
+			a[j+1] = a[monitor];
 		}
-		a[j+1] = a[monitor];
-		PrintUnit(a,8,i);	
+			PrintUnit(a,8,i);	
 	}
 } 
 int main()
