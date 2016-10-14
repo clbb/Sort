@@ -13,22 +13,36 @@ INS_SRC=InsertSort.cpp
 SHE=ExShellSort
 SHE_SRC=ShellSort.cpp
 
+MER=ExMergeSort
+MER_SRC=MergeSort.cpp
 
 .PHONY:all
-all:$(INS) 
+all:$(INS) $(BUB) $(SHE) $(MER) 
 
+.PHONY:ins
+ins:$(INS)
 $(INS):$(INS_SRC)
 	g++ -o $@ $^
 	
+.PHONY:bub
+bub:$(BUB)
 $(BUB):$(BUB_SRC)
 	g++ -o $@ $^
 
+.PHONY:qui
+qui:$(QUI)
 $(QUI):$(QUI_SRC)
 	g++ -o $@ $^
 
+.PHONY:she
+she:$(SHE)
 $(SHE):$(SHE_SRC)
 	g++ -o $@ $^
-		
+	
+.PHONY:mer
+mer:$(MER)
+$(MER):$(MER_SRC)
+	g++ -o $@ $^	
 .PHONY:clean
 clean:
 	rm -rf Ex*

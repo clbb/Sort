@@ -7,6 +7,7 @@ void Print(int a[],int n,int j)
 		cout<<a[i]<<" ";
 	cout<<endl;
 }
+
 int GetPartion(int a[],int left,int right)
 {
 	int L = left;
@@ -28,10 +29,11 @@ int GetPartion(int a[],int left,int right)
 			a[R] = a[L];
 			R--;
 		}
-		a[L] = key;
-		return L;
 	}
+	a[L] = key;
+	return L;
 }
+
 void QuickSort(int a[],int left,int right)
 {
 	if(a == NULL || left > right)
