@@ -37,12 +37,12 @@ void MergeSort(int a[],int left,int right)
 {
 	if( left >= right)
 		return;
+	cout<<"why here error"<<endl;
 	int mid = (left+right)/2;
 	MergeSort(a,left,mid);
 	MergeSort(a,mid+1,right);
 	Merge(a,left,mid,right);
 
-	PrintUnit(a,10);
 } 
 
 int main()

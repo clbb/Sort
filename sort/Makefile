@@ -16,8 +16,16 @@ SHE_SRC=ShellSort.cpp
 MER=ExMergeSort
 MER_SRC=MergeSort.cpp
 
+HEA=ExHeapSort
+HEA_SRC=HeapSort.cpp
+
 .PHONY:all
-all:$(INS) $(BUB) $(SHE) $(MER) 
+all:$(INS) $(BUB) $(SHE) $(MER) $(HEA)
+
+.PHONY:hea
+hea:$(HEA)
+$(HEA):$(HEA_SRC)
+	g++ -o $@ $^
 
 .PHONY:ins
 ins:$(INS)
