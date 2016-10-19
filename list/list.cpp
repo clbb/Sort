@@ -381,18 +381,26 @@ void TestFindMid()
 
 pNode Findlast_K(pNode pHead,int k)
 {
-	if(pHead == NULL || pHead->_next == NULL)
+	if(pHead == NULL || k == 0)
 		return NULL;
 	
 	pNode fast = pHead;
 	pNode slow = pHead;
-	while(fast && fast->_next)
+	int num = k;
+	while(--num)
 	{
-		slow = slow->_next;	
-		while(k--)
+	//	slow = slow->_next;	
+		if(fast->_next)
 		{
 			fast = fast->_next;
 		}
+		else
+			exit(2);
+	}
+	while(fast->_next)
+	{
+		fast = fast->_next;
+		slow = slow->_next;
 	}
 	return slow;
 	
@@ -410,13 +418,13 @@ void TestFindlast_K()
 	pNode a = new Node(4, b);
 	
 	show(a);
-	pNode pk = Findlast_K(a,2);
-	cout<<pk->_data<<endl;
+	pNode pk = Findlast_K(a,1);
+	cout<<"倒数第1:"<<pk->_data<<endl;
+	pNode pk1 = Findlast_K(a,8);
+	cout<<"倒数第8:"<<pk1->_data<<endl;
+	pNode pk2 = Findlast_K(a,5);
+	cout<<"倒数第5:"<<pk2->_data<<endl;
 }
-
-/*
- *	查找单链表的倒数第K个节点，只能遍历一次
- *	*/
 
 
 /*
@@ -426,7 +434,7 @@ void TestFindlast_K()
 /*
  *	判断带环（快慢指针），时：O(n)	空：O(1)
  *	*/
-
+void 
 int main()
 {
 //	Test1();
