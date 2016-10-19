@@ -424,17 +424,128 @@ void TestFindlast_K()
 	cout<<"倒数第8:"<<pk1->_data<<endl;
 	pNode pk2 = Findlast_K(a,5);
 	cout<<"倒数第5:"<<pk2->_data<<endl;
+	pNode pk3 = Findlast_K (a,9);
+	cout<<"倒数大于链表长度:"<<pk3->_data<<endl;
 }
 
 
-/*
- *	判断链表是否带环，若带环求长度，求环的入口，  并求每个方法的时/空复杂度
- *	*/
 
 /*
  *	判断带环（快慢指针），时：O(n)	空：O(1)
  *	*/
-void 
+bool Isring(pNode pHead)
+{
+	pNode fast = pHead;
+	pNode slow = pHead;
+	while(fast && fast->_next)
+	{
+		slow = slow->_next;
+		
+		fast = fast->_next;
+		fast = fast->_next;
+		if(fast == slow)
+			break;
+	}
+	return !(fast == NULL || fast->_next == NULL);
+}
+
+void TestIsring()
+{
+	pNode h = new Node(1, NULL);
+	pNode g = new Node(0, h);
+	pNode f = new Node(9, g);
+	pNode e = new Node(7, f);
+
+	pNode d = new Node(5, e);
+	pNode c = new Node(3, d);
+	pNode b = new Node(2, c);
+	pNode a = new Node(4, d);
+	h->_next = d;	
+	cout<<Isring(a)<<endl;
+
+} 
+
+/*
+ *	判断链表是否带环，若带环求长度，求环的入口，  并求每个方法的时/空复杂度
+ *	算法描述：
+ *
+ *	当fast若与slow相遇时，slow肯定没有走遍历完链表，而fast已经在环内循环了n圈(1<=n)。假设slow走了s步，则fast走了2s步（fast步数还等于s 加上在环上多转的n圈），设环长为r，则：
+ *
+ *	2s = s + nr
+ *	s= nr
+ *
+ *	设整个链表长L，入口环与相遇点距离为x，起点到环入口点的距离为a。
+ *	a + x = s
+ *	a + x = nr
+ *	a + x = (n – 1)r +r = (n-1)r + L - a
+ *	a = (n-1)r + (L – a – x)
+ *
+ *	(L – a – x)为相遇点到环入口点的距离，由此可知，从链表头到环入口点等于(n-1)循环内环+相遇点到环入口点，于是我们从链表头、与相遇点分别设一个指针，每次各走一步，两个指针必定相遇，且相遇第一点为环入口点。
+ *	*/
+pNode FindPort(pNode pHead)
+{
+	pNode fast = pHead;
+	pNode slow = pHead;
+	while(fast && fast->_next)
+	{
+		slow = slow->_next;
+		
+		fast = fast->_next;
+		fast = fast->_next;
+		if(fast == slow)
+			break;
+	}
+	if(fast == NULL || fast->_next == NULL)
+		return NULL;
+
+	slow = pHead;
+	while(fast != slow)
+	{	
+		fast = fast->_next;
+		slow = slow->_next;
+	}
+	//return slow;
+
+	//环长
+	pNode cir_len =slow;
+	int count = 1;
+	slow = slow->_next;
+	while( slow != cir_len && ++count)
+	{
+		slow = slow->_next;
+	}
+	cout<<"circle lenth:>"<<count<<endl;
+	return slow;
+	
+}
+void TestFindPort()
+{
+	pNode h = new Node(1, NULL);
+	pNode g = new Node(0, h);
+	pNode f = new Node(9, g);
+	pNode e = new Node(7, f);
+
+	pNode d = new Node(5, e);
+	pNode c = new Node(3, d);
+	pNode b = new Node(2, c);
+	pNode a = new Node(4, d);
+	h->_next = d;	
+	cout<<FindPort(a)->_data<<endl;
+
+}
+/*
+ *	判断两个链表是否相交（链表不带环）
+ *		将链表1 首尾相接， 转化成判断 链表2 是否带环问题
+ *		*/
+ 
+
+//单链表部分逆置
+//Node* RolloverList(Node* list,int k)
+//list 无头结点
+//1->2->3->4->5  k=2   翻转后： 2-1->4->3->5
+// 思路： 小部分翻转，各个部分拼接
+pNode RolloverList(pNode list,int k);
+//{}
 int main()
 {
 //	Test1();
@@ -445,6 +556,8 @@ int main()
 //	Test_Res();
 //	TestMerge();
 //	TestFindMid();
-	TestFindlast_K();
+//	TestFindlast_K();
+//	TestIsring();
+	TestFindPort();
 	return 0;
 }
