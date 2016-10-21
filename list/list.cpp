@@ -509,10 +509,10 @@ pNode FindPort(pNode pHead)
 	//环长
 	pNode cir_len =slow;
 	int count = 1;
-	slow = slow->_next;
+	cir_len = cir_len->_next;
 	while( slow != cir_len && ++count)
 	{
-		slow = slow->_next;
+		cir_len = cir_len->_next;
 	}
 	cout<<"circle lenth:>"<<count<<endl;
 	return slow;
@@ -534,30 +534,250 @@ void TestFindPort()
 
 }
 /*
- *	判断两个链表是否相交（链表不带环）
- *		将链表1 首尾相接， 转化成判断 链表2 是否带环问题
+ *	判断两个链表是否相交（链表不带环）并找出交点
+ *	思路1:    如果他们相交的话，那么他们最后的一个节点一定是相同的，否则是不相交的。因此判断两个链表是否相交就很简单了，分别遍历到两个链表的尾部，然后判断他们是否相同，如果相同，则相交；否则不相交。
+ *  思路2		将链表1 首尾相接， 转化成判断 链表2 是否带环问题
  *		*/
- 
+//思路1
+//bool Twolist_is_point(pNode pHead1,pNode pHead2)
+//{
+//	if(pHead1 == NULL || pHead2 == NULL)
+//		return false;
+//	
+//	pNode p1 = pHead1;
+//	pNode p2 = pHead2;
+//	while(p1->_next)
+//	{
+//		p1 = p1->_next;
+//	}
+//	while(p2->_next)
+//	{
+//		p2 = p2->_next;
+//	}	
+//	if(p1 != p2)
+//		return false;
+//	else
+//		return true;
+//}
+
+//思路2
+bool Twolist_is_point(pNode pHead1,pNode pHead2)
+{
+	if(pHead1 == NULL || pHead2 == NULL)
+		return false;
+
+	pNode p1 = pHead1;
+	pNode p2 = pHead2;
+	while(p1->_next)
+	{
+		p1 = p1->_next;
+	}
+	p1->_next = pHead1;
+
+	return Isring(pHead2);	
+//	pNode slow = pHead2;
+//	pNode fast = pHead2;
+//	while(fast && fast->_next)
+//	{
+//		slow = slow->_next;
+//
+//		fast = fast->_next;
+//		fast = fast->_next;
+//		if(slow == fast)
+//			break;
+//	}
+//	return true;
+}
+
+//交点 思路1  判断哪个链表长，先让一个链表走过相差的路程，后让两个等长的链表一起走相遇点及为交点
+int fabs(int a,int b)
+{
+	int c = a-b;
+	return c > 0 ? c : -c; 
+}
+pNode Twolist_is_point_port(pNode pHead1,pNode pHead2)
+{
+	if(pHead1 == NULL || pHead2 == NULL)
+		return NULL;
+	
+	pNode p1 = pHead1;
+	pNode p2 = pHead2;
+	int len1 = 0;
+	int len2 = 0;
+	while(p1->_next)
+	{
+		p1 = p1->_next;
+		len1++;
+	}
+	while(p2->_next)
+	{
+		p2 = p2->_next;
+		len2++;
+	}
+	//无交点	
+	if(p1 != p2)
+		return NULL;
+	//有交点
+	else
+	{
+		p1 = pHead1;
+		p2 = pHead2;
+		int far = fabs(len1,len2);
+	// list1 > list2
+		if(len1 > len2)
+		{
+			for(int i = 0;i<far;i++)
+			{
+				p1 = p1->_next;
+			}
+			while(p1 != p2)
+			{
+				p1 = p1->_next;
+				p2 = p2->_next;
+			}
+			return p1;
+		}
+	// list1 =< list2
+		else
+		{
+			for(int j = 0; j<far; j++)
+			{
+				p2 = p2->_next;
+			}
+			while(p1 != p2)
+			{
+				p1 = p1->_next;
+				p2 = p2->_next;
+			}
+			return p1;
+		}
+	}
+}
+
+//交点 思路2: 运用栈 将两个链表压栈，进行出栈比较，相同及为交点
+#include<stack>
+pNode Twolist_is_point_stack(pNode pHead1,pNode pHead2)
+{
+	if(pHead1 == NULL || pHead2 == NULL)
+		return NULL;
+	stack<pNode> s1;
+	stack<pNode> s2;
+	pNode p1 = pHead1;
+	pNode p2 = pHead2;
+	while(p1 != NULL)
+	{
+		s1.push(p1);
+		p1 = p1->_next;
+	}
+	while(p2 != NULL)
+	{
+		s2.push(p2);
+		p2 = p2->_next;
+	}
+	pNode compare1 = NULL;
+	pNode compare2 = NULL;
+	while(!(s1.empty() && s2.empty()))
+	{
+		compare1 = s1.top();
+		s1.pop();
+		compare2 = s2.top();
+		s2.pop();
+		if(compare1->_data != compare2->_data)//倒着比，如果有交点肯定有许多相同的
+			return compare1->_next;
+	}
+	return NULL;
+}
+
+
+void TestTwolist_is_point()
+{
+	pNode h = new Node(1, NULL);
+	pNode g = new Node(0, h);
+	pNode f = new Node(9, g);
+	pNode e = new Node(7, f);
+
+	pNode d = new Node(5, e);
+	pNode c = new Node(3, d);
+	pNode b = new Node(2, c);
+	pNode a = new Node(4, b);
+	
+//	pNode p = new Node(11, e);	//构成交点
+	pNode p = new Node(11, NULL);
+	pNode o = new Node(10, p);
+	pNode n = new Node(6, o);
+	pNode m = new Node(8, n);
+
+	pNode ret1 = Twolist_is_point_stack(a,m); 
+	pNode ret2 = Twolist_is_point_port(a,m);
+	if(ret1 == NULL)
+		cout<<"No point!"<<endl;
+	else 
+		cout<<Twolist_is_point_stack(a,m)->_data<<endl;
+	if(ret2 == NULL)
+		cout<<"No point!"<<endl;
+	else	
+		cout<<Twolist_is_point_port(a,m)->_data<<endl;
+
+	//cout<<Twolist_is_point(a,e)<<endl;	
+}
+/*
+ *	Josephus：n个人围成圈，依次编号为1,2,..,n，现在从1号开始依次报数，
+ *		当报到m时，报m的人退出，下一个人重新从1报起，
+ *			循环下去，问最后剩下那个人的编号是多少？（环链表 模拟法）
+ *
+ *			*/
+
 
 //单链表部分逆置
 //Node* RolloverList(Node* list,int k)
 //list 无头结点
 //1->2->3->4->5  k=2   翻转后： 2-1->4->3->5
 // 思路： 小部分翻转，各个部分拼接
-pNode RolloverList(pNode list,int k);
-//{}
+pNode RolloverList(pNode pHead,int k)
+{
+	if(pHead == NULL || pHead->_next == NULL || k <= 1)
+		return NULL;
+	
+	int count = 0;
+	pNode ins = pHead;
+	pNode prevHead = pHead;
+	pNode sectionTail = NULL;
+	pNode sectionHead = NULL;
+	pNode prevTail = NULL;
+	
+	int sectionNum = 0;
+	while(ins)
+	{
+		count = k;
+		while(count-- && ins)
+		{
+			prevHead->_next = sectionTail;
+			prevHead = ins;
+			ins = ins->_next;
+			ins->_next = prevHead;
+			prevHead = ins;
+		}
+		sectionNum++;
+		if(1 == sectionNum)
+			setionHead = prevHead;
+		else 
+			
+	}	
+	return NULL;	
+}
 int main()
 {
 //	Test1();
 //	Test2();
 //	TestQuickSort();	
 //	TestBub();
-//    TestNoHead_NonepHead();
+//  TestNoHead_NonepHead();
 //	Test_Res();
 //	TestMerge();
 //	TestFindMid();
 //	TestFindlast_K();
-//	TestIsring();
-	TestFindPort();
+//	TestIsring()
+//	TestFindPort();
+//	TestTwolist_is_point();
 	return 0;
 }
